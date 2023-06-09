@@ -4,8 +4,8 @@ You are tasked with building a RESTful API for a social media platform. The API 
 
 ## Requirements:
 ### User Registration and Authentication:
--[ ] Users should be able to register with their email and password to create an account.
--[ ] Users should be able to login with their credentials and receive a token for authentication.
+-[x] Users should be able to register with their email and password to create an account.
+-[x] Users should be able to login with their credentials and receive a token for authentication.
 -[ ] Users should be able to logout and invalidate their token.
 ### User Profile:
 -[ ] Users should be able to create and update their profile, including profile picture, bio, and other details.

@@ -23,4 +23,5 @@ urlpatterns = [
         "api/social_network/",
         include("social_network.urls", namespace="social_network"),
     ),
+    path("api/user/", include("user.urls", namespace="user")),
 ]
