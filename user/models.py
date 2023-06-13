@@ -36,8 +36,23 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    username = None
     email = models.EmailField(_("email address"), unique=True)
+    username = models.CharField(
+        _("username"),
+        max_length=150,
+        blank=True,
+        null=True,
+    )
+    bio = models.TextField(_("biography"), blank=True, null=True)
+    picture = models.ImageField(
+        _("profile picture"),
+        upload_to="profile_pictures",
+        blank=True,
+        null=True,
+    )
+    following = models.ManyToManyField(
+        "self", symmetrical=False, related_name="followers"
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

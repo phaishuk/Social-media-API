@@ -6,14 +6,14 @@ You are tasked with building a RESTful API for a social media platform. The API 
 ### User Registration and Authentication:
 -[x] Users should be able to register with their email and password to create an account.
 -[x] Users should be able to login with their credentials and receive a token for authentication.
--[ ] Users should be able to logout and invalidate their token.
+-[x] Users should be able to logout and invalidate their token.
 ### User Profile:
--[ ] Users should be able to create and update their profile, including profile picture, bio, and other details.
--[ ] Users should be able to retrieve their own profile and view profiles of other users.
+-[x] Users should be able to create and update their profile, including profile picture, bio, and other details.
+-[x] Users should be able to retrieve their own profile and view profiles of other users.
 -[ ] Users should be able to search for users by username or other criteria.
 ### Follow/Unfollow:
--[ ] Users should be able to follow and unfollow other users.
--[ ] Users should be able to view the list of users they are following and the list of users following them.
+-[x] Users should be able to follow and unfollow other users.
+-[x] Users should be able to view the list of users they are following and the list of users following them.
 ### Post Creation and Retrieval:
 -[ ] Users should be able to create new posts with text content and optional media attachments (e.g., images). (Adding images is optional task)
 -[ ] Users should be able to retrieve their own posts and posts of users they are following.

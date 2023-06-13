@@ -2,10 +2,12 @@ from django.urls import path
 
 from user.views import (
     CreateUserView,
-    ManageUserView,
     CreateTokenView,
-    UserView,
+    ManageUserView,
     LogoutView,
+    UserView,
+    UserFollowersView,
+    UserFollowingView,
 )
 
 app_name = "user"
@@ -16,5 +18,15 @@ urlpatterns = [
     path("me/", ManageUserView.as_view(), name="manage"),
     path("list/", UserView.as_view(), name="user-list"),
     path("<int:id>/", UserView.as_view(), name="user-detail"),
-    path("logout/", LogoutView.as_view(), name="login"),
+    path(
+        "<int:id>/followers/",
+        UserFollowersView.as_view(),
+        name="user-followers",
+    ),
+    path(
+        "<int:id>/following/",
+        UserFollowingView.as_view(),
+        name="user-following",
+    ),
+    path("logout/", LogoutView.as_view(), name="logout"),
 ]
