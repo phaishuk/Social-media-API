@@ -10,7 +10,7 @@ You are tasked with building a RESTful API for a social media platform. The API 
 ### User Profile:
 -[x] Users should be able to create and update their profile, including profile picture, bio, and other details.
 -[x] Users should be able to retrieve their own profile and view profiles of other users.
--[ ] Users should be able to search for users by username or other criteria.
+-[x] Users should be able to search for users by username or other criteria.
 ### Follow/Unfollow:
 -[x] Users should be able to follow and unfollow other users.
 -[x] Users should be able to view the list of users they are following and the list of users following them.

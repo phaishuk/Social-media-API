@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import generics, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -9,8 +10,8 @@ from rest_framework.views import APIView
 from user.models import User
 from user.serializers import (
     UserSerializer,
-    FollowerSerializer,
-    FollowingSerializer,
+    FollowLogicSerializer,
+    FollowLogicSerializer,
 )
 
 
@@ -86,22 +87,34 @@ class UserView(generics.RetrieveAPIView, generics.ListAPIView):
                 status=status.HTTP_200_OK,
             )
 
+    def get_queryset(self):
+        queryset = User.objects.all()  # TODO maybe prefetch related?
 
-class UserFollowersView(generics.ListAPIView):
-    serializer_class = FollowerSerializer
+        search_param = self.request.query_params.get("search")
+        email_param = self.request.query_params.get("email")
+
+        if search_param:
+            queryset = queryset.filter(
+                Q(username__icontains=search_param)
+                | Q(first_name__icontains=search_param)
+                | Q(last_name__icontains=search_param)
+            )
+        if email_param:
+            queryset = queryset.filter(username__icontains=email_param)
+        return queryset
+
+
+class UserFollowView(generics.ListAPIView):
+    serializer_class = FollowLogicSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user_id = self.kwargs.get("id")
-        return User.objects.filter(following__id=user_id)
-
-
-class UserFollowingView(generics.ListAPIView):
-    serializer_class = FollowingSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-        user_id = self.kwargs.get("id")
-        return User.objects.filter(followers__id=user_id)
+        request_path = self.request.path
+        if "followers" in request_path:
+            return User.objects.filter(following__id=user_id)
+        elif "following" in request_path:
+            return User.objects.filter(followers__id=user_id)
+        else:
+            return User.objects.none()

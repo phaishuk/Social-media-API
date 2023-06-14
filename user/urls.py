@@ -6,8 +6,7 @@ from user.views import (
     ManageUserView,
     LogoutView,
     UserView,
-    UserFollowersView,
-    UserFollowingView,
+    UserFollowView,
 )
 
 app_name = "user"
@@ -20,12 +19,12 @@ urlpatterns = [
     path("<int:id>/", UserView.as_view(), name="user-detail"),
     path(
         "<int:id>/followers/",
-        UserFollowersView.as_view(),
+        UserFollowView.as_view(),
         name="user-followers",
     ),
     path(
         "<int:id>/following/",
-        UserFollowingView.as_view(),
+        UserFollowView.as_view(),
         name="user-following",
     ),
     path("logout/", LogoutView.as_view(), name="logout"),

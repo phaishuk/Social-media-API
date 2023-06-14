@@ -47,24 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class FollowerSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = (
-            "id",
-            "email",
-            "username",
-            "first_name",
-            "last_name",
-            "bio",
-            "picture",
-        )
-        extra_kwargs = {
-            "url": {"view_name": "user:user-detail", "lookup_field": "id"}
-        }
-
-
-class FollowingSerializer(serializers.HyperlinkedModelSerializer):
+class FollowLogicSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = (
