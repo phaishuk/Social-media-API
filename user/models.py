@@ -41,15 +41,11 @@ class User(AbstractUser):
         _("username"),
         unique=True,
         max_length=150,
-        blank=True,
-        null=True,
     )
     bio = models.TextField(_("biography"), blank=True, null=True)
     picture = models.ImageField(
         _("profile picture"),
         upload_to="profile_pictures",
-        blank=True,
-        null=True,
     )
     following = models.ManyToManyField(
         "self", symmetrical=False, related_name="followers"
