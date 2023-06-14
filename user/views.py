@@ -9,13 +9,16 @@ from rest_framework.views import APIView
 
 from user.models import User
 from user.serializers import (
-    UserSerializer,
+    UserSelfSerializer,
     FollowLogicSerializer,
+    UserListSerializer,
+    UserDetailSerializer,
+    UserCreateSerializer,
 )
 
 
 class CreateUserView(generics.CreateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserCreateSerializer
 
 
 class CreateTokenView(ObtainAuthToken):
@@ -23,7 +26,7 @@ class CreateTokenView(ObtainAuthToken):
 
 
 class ManageSelfUserView(generics.RetrieveUpdateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserSelfSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
@@ -52,7 +55,7 @@ class LogoutView(APIView):
 
 
 class UserListView(generics.ListAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserListSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
@@ -77,7 +80,7 @@ class UserListView(generics.ListAPIView):
 
 
 class UserDetailView(generics.RetrieveAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserDetailSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     queryset = User.objects.all()
