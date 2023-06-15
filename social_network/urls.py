@@ -1,5 +1,5 @@
-from rest_framework import routers
 from django.urls import path, include
+from rest_framework import routers
 
 from social_network.views import PostViewSet
 
