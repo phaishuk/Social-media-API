@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 
+from social_network.models import Post
+from social_network.serializers import PostSerializer
 from user.models import User
 from user.serializers import (
     UserSelfSerializer,
@@ -127,3 +129,13 @@ class UserFollowView(generics.ListAPIView):
             return User.objects.filter(followers__id=user_id)
         else:
             return User.objects.none()
+
+
+class UserPostListView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        user_id = self.kwargs["id"]
+        return Post.objects.filter(owner_id=user_id)

@@ -46,6 +46,8 @@ class User(AbstractUser):
     picture = models.ImageField(
         _("profile picture"),
         upload_to="profile_pictures",
+        blank=True,
+        null=True,
     )
     following = models.ManyToManyField(
         "self", symmetrical=False, related_name="followers"
