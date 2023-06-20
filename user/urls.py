@@ -9,6 +9,7 @@ from user.views import (
     UserListView,
     UserDetailView,
     UserPostListView,
+    UserLikedPostsListView,
 )
 
 app_name = "user"
@@ -31,4 +32,9 @@ urlpatterns = [
         name="user-following",
     ),
     path("<int:id>/posts/", UserPostListView.as_view(), name="user-posts"),
+    path(
+        "<int:id>/liked-posts/",
+        UserLikedPostsListView.as_view(),
+        name="user-liked-posts",
+    ),
 ]

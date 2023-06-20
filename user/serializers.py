@@ -21,6 +21,11 @@ class BaseUserSerializer(serializers.ModelSerializer):
         lookup_field="id",
         lookup_url_kwarg="id",
     )
+    liked_posts = serializers.HyperlinkedIdentityField(
+        view_name="user:user-liked-posts",
+        lookup_field="id",
+        lookup_url_kwarg="id",
+    )
 
     class Meta:
         model = User
@@ -39,6 +44,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
             "followers",
             "following",
             "posts",
+            "liked_posts",
         )
 
         read_only_fields = ("is_staff",)

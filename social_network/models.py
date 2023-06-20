@@ -12,7 +12,9 @@ class Post(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
     )
-    likes = models.ManyToManyField(to=User)
+    likes = models.ManyToManyField(
+        User, through="Like", related_name="liked_posts"
+    )
     is_updated = models.BooleanField(default=False)
     content = models.FileField(
         upload_to="post_content/", blank=True, null=True
@@ -25,24 +27,30 @@ class Post(models.Model):
         ordering = ["-created_at"]
 
 
-class Comment(models.Model):
-    owner = models.ForeignKey(
-        to=User, on_delete=models.CASCADE, related_name="comments"
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-    )
-    post = models.ForeignKey(
-        to=Post, on_delete=models.CASCADE, related_name="comments"
-    )
-    text = models.TextField()
-    is_updated = models.BooleanField(default=False)
-    content = models.FileField(
-        upload_to="comment_content/", blank=True, null=True
-    )
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(to=Post, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return (
-            f"Comment by {self.owner.username} "
-            f"at {self.created_at} on {self.post}"
+            f"{self.user.username} liked "
+            f"{self.post.title} at {self.created_at}"
         )
+
+
+# class Comment(models.Model):
+#     user = models.ForeignKey(
+#         to=User, on_delete=models.CASCADE, related_name="comments"
+#     )
+#     post = models.ForeignKey(
+#         to=Post, on_delete=models.CASCADE, related_name="comments"
+#     )
+#     text = models.TextField()
+#     created_at = models.DateTimeField(auto_now_add=True)
+#
+#     def __str__(self):
+#         return (
+#             f"Comment by {self.user.username} on "
+#             f"{self.post.title} at {self.created_at}"
+#         )

@@ -23,6 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
+    liked_by_user = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -33,18 +34,17 @@ class PostSerializer(serializers.ModelSerializer):
             "created_at",
             "text",
             "content",
+            "liked_by_user",
         )
 
+    def get_liked_by_user(self, obj):
+        user = self.context.get("request").user
+        return obj.likes.filter(id=user.id).exists()
 
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = (
-            "id",
-            "owner",
-            "created_at",
-            "post",
-            "text",
-            "is_updated",
-            "content",
-        )
+
+# class CommentSerializer(serializers.ModelSerializer):
+#     user = UserSerializer(read_only=True)
+#
+#     class Meta:
+#         model = Comment
+#         fields = ("id", "user", "text", "created_at")

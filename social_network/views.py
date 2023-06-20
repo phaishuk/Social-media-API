@@ -1,9 +1,12 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from social_network.models import Post, Comment
-from social_network.serializers import PostSerializer, CommentSerializer
+from social_network.models import Post#, Comment
+from social_network.serializers import PostSerializer#, CommentSerializer
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -16,16 +19,19 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
     def perform_update(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save(owner=self.request.user, is_updated=True)
 
+    @action(detail=True, methods=["post"])
+    def like(self, request, pk=None):
+        post = self.get_object()
+        user = request.user
 
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated]
+        if post.likes.filter(id=user.id).exists():
+            post.likes.remove(user)
+            liked = False
+        else:
+            post.likes.add(user)
+            liked = True
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        return Response({"liked": liked}, status=status.HTTP_200_OK)
 
-    def perform_update(self, serializer):
-        serializer.save(owner=self.request.user)

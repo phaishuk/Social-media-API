@@ -139,3 +139,13 @@ class UserPostListView(generics.ListAPIView):
     def get_queryset(self):
         user_id = self.kwargs["id"]
         return Post.objects.filter(owner_id=user_id)
+
+
+class UserLikedPostsListView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        user = User.objects.get(id=self.kwargs["id"])
+        return user.liked_posts.all()
