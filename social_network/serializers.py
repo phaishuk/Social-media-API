@@ -24,6 +24,14 @@ class UserSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
     liked_by_user = serializers.SerializerMethodField()
+    edited = serializers.BooleanField(source="is_updated", read_only=True)
+    comments = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name="social_network:comment-detail",
+        lookup_field="id",
+        lookup_url_kwarg="pk",
+    )
 
     class Meta:
         model = Post
@@ -35,6 +43,8 @@ class PostSerializer(serializers.ModelSerializer):
             "text",
             "content",
             "liked_by_user",
+            "edited",
+            "comments",
         )
 
     def get_liked_by_user(self, obj):
@@ -42,9 +52,29 @@ class PostSerializer(serializers.ModelSerializer):
         return obj.likes.filter(id=user.id).exists()
 
 
-# class CommentSerializer(serializers.ModelSerializer):
-#     user = UserSerializer(read_only=True)
-#
-#     class Meta:
-#         model = Comment
-#         fields = ("id", "user", "text", "created_at")
+class CommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    edited = serializers.BooleanField(source="is_updated", read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = (
+            "id",
+            "user",
+            "text",
+            "created_at",
+            "edited",
+        )
+
+
+class CommentListSerializer(serializers.ModelSerializer):
+    edited = serializers.BooleanField(source="is_updated", read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = (
+            "id",
+            "text",
+            "created_at",
+            "edited",
+        )
