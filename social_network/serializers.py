@@ -25,12 +25,9 @@ class PostSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
     liked_by_user = serializers.SerializerMethodField()
     edited = serializers.BooleanField(source="is_updated", read_only=True)
-    comments = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name="social_network:comment-detail",
-        lookup_field="id",
-        lookup_url_kwarg="pk",
+    comments = serializers.HyperlinkedIdentityField(
+        view_name="social_network:comment-list",
+        lookup_url_kwarg="post_pk",
     )
 
     class Meta:

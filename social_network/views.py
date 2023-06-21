@@ -10,7 +10,6 @@ from social_network.permissions import IsOwnerOrReadOnly
 from social_network.serializers import (
     PostSerializer,
     CommentSerializer,
-    CommentListSerializer,
 )
 
 
@@ -42,22 +41,18 @@ class PostViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+    serializer_class = CommentSerializer
 
-    def get_serializer_class(self, serializer=CommentListSerializer):
-        if self.action == "list":
-            return serializer
-        return CommentSerializer
+    def get_queryset(self):
+        post_id = self.kwargs.get("post_pk")
+        return Comment.objects.filter(post_id=post_id)
 
     def perform_create(self, serializer):
         post_id = self.kwargs.get("post_pk")
         post = get_object_or_404(Post, pk=post_id)
         serializer.save(user=self.request.user, post=post)
-
-    def perform_update(self, serializer):
-        serializer.save(owner=self.request.user, is_updated=True)
 
     def update(self, request, *args, **kwargs):
         comment = self.get_object()
@@ -67,12 +62,12 @@ class CommentViewSet(viewsets.ModelViewSet):
                 {"error": "You do not have permission to edit this comment."},
                 status=status.HTTP_403_FORBIDDEN,
             )
-
+        request.data["owner"] = comment.owner_id
         serializer = self.get_serializer(
             comment, data=request.data, partial=True
         )
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(owner=self.request.user, is_updated=True)
 
         return Response(serializer.data)
 
