@@ -47,7 +47,7 @@ class PostSerializer(serializers.ModelSerializer):
         )
 
     def get_liked_by_current_user(self, obj: Post):
-        if not isinstance(obj, Post):  # TODO: is necessary?
+        if not isinstance(obj, Post):
             return False
         user = self.context.get("request").user
         return obj.likes.filter(id=user.id).exists()

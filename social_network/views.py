@@ -11,7 +11,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from social_network.models import Post, Comment
-from social_network.permissions import IsOwnerOrAdminOrReadOnly
+from social_network.permissions import (
+    IsOwnerOrAdminOrReadOnly,
+    IsCommentOwnerOrPostOwnerOrAdminOrGetMethod,
+)
 from social_network.serializers import (
     PostSerializer,
     CommentSerializer,
@@ -94,7 +97,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsCommentOwnerOrPostOwnerOrAdminOrGetMethod,)
     serializer_class = CommentSerializer
 
     def get_queryset(self):
@@ -105,35 +108,3 @@ class CommentViewSet(viewsets.ModelViewSet):
         post_id = self.kwargs.get("post_pk")
         post = get_object_or_404(Post, pk=post_id)
         serializer.save(user=self.request.user, post=post)
-
-    def update(self, request, *args, **kwargs):
-        comment = self.get_object()
-
-        if comment.user != request.user:
-            return Response(
-                {"error": "You do not have permission to edit this comment."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-        request.data["owner"] = comment.owner_id
-        serializer = self.get_serializer(
-            comment, data=request.data, partial=True
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save(owner=self.request.user, is_updated=True)
-
-        return Response(serializer.data)
-
-    def destroy(self, request, *args, **kwargs):
-        comment = self.get_object()
-
-        if comment.user != request.user and comment.post.owner != request.user:
-            return Response(
-                {
-                    "error": "You do not have permission to delete this comment."
-                },
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
-        comment.delete()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
