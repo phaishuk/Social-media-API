@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.db.models import Q
 from django.utils.timezone import make_aware
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
@@ -10,10 +11,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from social_network.models import Post, Comment
-from social_network.permissions import IsOwnerOrReadOnly
+from social_network.permissions import IsOwnerOrAdminOrReadOnly
 from social_network.serializers import (
     PostSerializer,
     CommentSerializer,
+    RestrictedPostSerializer,
 )
 from tasks.post_creation_task import create_post
 
@@ -22,7 +24,12 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    permission_classes = (IsOwnerOrAdminOrReadOnly,)
+
+    def get_serializer_class(self):
+        if self.request.user.is_authenticated:
+            return PostSerializer
+        return RestrictedPostSerializer
 
     def perform_create(self, serializer):
         scheduled_time = self.request.data.get("scheduled_time")
@@ -56,7 +63,9 @@ class PostViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         return Response(status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["post"])
+    @action(
+        detail=True, methods=["post"], permission_classes=(IsAuthenticated,)
+    )
     def like(self, request, pk=None):
         post = self.get_object()
         user = request.user
@@ -69,6 +78,18 @@ class PostViewSet(viewsets.ModelViewSet):
             liked = True
 
         return Response({"liked": liked}, status=status.HTTP_200_OK)
+
+    def get_queryset(self):
+        queryset = Post.objects.all()
+
+        search_param = self.request.query_params.get("search")
+
+        if search_param:
+            queryset = queryset.filter(
+                Q(title__icontains=search_param)
+                | Q(text__icontains=search_param)
+            )
+        return queryset
 
 
 class CommentViewSet(viewsets.ModelViewSet):

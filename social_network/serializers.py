@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
-    liked_by_user = serializers.SerializerMethodField()
+    liked_by_current_user = serializers.SerializerMethodField()
     edited = serializers.BooleanField(source="is_updated", read_only=True)
     comments = serializers.HyperlinkedIdentityField(
         view_name="social_network:comment-list",
@@ -40,17 +40,25 @@ class PostSerializer(serializers.ModelSerializer):
             "created_at",
             "text",
             "content",
-            "liked_by_user",
+            "liked_by_current_user",
             "edited",
             "comments",
             "scheduled_time",
         )
 
-    def get_liked_by_user(self, obj: Post):
-        if not isinstance(obj, Post):
+    def get_liked_by_current_user(self, obj: Post):
+        if not isinstance(obj, Post):  # TODO: is necessary?
             return False
         user = self.context.get("request").user
         return obj.likes.filter(id=user.id).exists()
+
+
+class RestrictedPostSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Post
+        fields = ["title", "text", "owner"]
 
 
 class CommentSerializer(serializers.ModelSerializer):

@@ -17,7 +17,7 @@ You are tasked with building a RESTful API for a social media platform. The API 
 ### Post Creation and Retrieval:
 -[x] Users should be able to create new posts with text content and optional media attachments (e.g., images). (Adding images is optional task)
 -[x] Users should be able to retrieve their own posts and posts of users they are following.
--[ ] Users should be able to retrieve posts by hashtags or other criteria.
+-[x] Users should be able to retrieve posts by hashtags or other criteria.
 ### Likes and Comments (Optional):
 -[x] Users should be able to like and unlike posts. Users should be able to view the list of posts they have liked. Users should be able to add comments to posts and view comments on posts.
 
