@@ -19,6 +19,11 @@ from user.serializers import (
 )
 
 
+class AuthenticationPermissionMixin:
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+
 class CreateUserView(generics.CreateAPIView):
     serializer_class = UserCreateSerializer
 
@@ -27,10 +32,10 @@ class CreateTokenView(ObtainAuthToken):
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
 
 
-class ManageSelfUserView(generics.RetrieveUpdateAPIView):
+class ManageSelfUserView(
+    AuthenticationPermissionMixin, generics.RetrieveUpdateDestroyAPIView
+):
     serializer_class = UserSelfSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
     def get_object(self):
         return self.request.user
@@ -47,19 +52,14 @@ class ManageSelfUserView(generics.RetrieveUpdateAPIView):
         instance.save()
 
 
-class LogoutView(APIView):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
+class LogoutView(AuthenticationPermissionMixin, APIView):
     def post(self, request):
         request.user.auth_token.delete()
         return Response({"detail": "Logged out successfully"})
 
 
-class UserListView(generics.ListAPIView):
+class UserListView(AuthenticationPermissionMixin, generics.ListAPIView):
     serializer_class = UserListSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -81,10 +81,8 @@ class UserListView(generics.ListAPIView):
         return queryset
 
 
-class UserDetailView(generics.RetrieveAPIView):
+class UserDetailView(AuthenticationPermissionMixin, generics.RetrieveAPIView):
     serializer_class = UserDetailSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
     queryset = User.objects.all()
     lookup_field = "id"
 
@@ -115,10 +113,8 @@ class UserDetailView(generics.RetrieveAPIView):
             )
 
 
-class UserFollowView(generics.ListAPIView):
+class UserFollowView(AuthenticationPermissionMixin, generics.ListAPIView):
     serializer_class = FollowLogicSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user_id = self.kwargs.get("id")
@@ -131,20 +127,18 @@ class UserFollowView(generics.ListAPIView):
             return User.objects.none()
 
 
-class UserPostListView(generics.ListAPIView):
+class UserPostListView(AuthenticationPermissionMixin, generics.ListAPIView):
     serializer_class = PostSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user_id = self.kwargs["id"]
         return Post.objects.filter(owner_id=user_id)
 
 
-class UserLikedPostsListView(generics.ListAPIView):
+class UserLikedPostsListView(
+    AuthenticationPermissionMixin, generics.ListAPIView
+):
     serializer_class = PostSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user = User.objects.get(id=self.kwargs["id"])

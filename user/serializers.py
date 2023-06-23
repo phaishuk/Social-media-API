@@ -100,8 +100,10 @@ class UserDetailSerializer(BaseUserSerializer):
             "picture",
             "followers_count",
             "following_count",
+            "posts_count",
             "followers",
             "following",
+            "posts",
         )
 
 
