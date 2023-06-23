@@ -19,10 +19,10 @@ You are tasked with building a RESTful API for a social media platform. The API 
 -[x] Users should be able to retrieve their own posts and posts of users they are following.
 -[ ] Users should be able to retrieve posts by hashtags or other criteria.
 ### Likes and Comments (Optional):
--[ ] Users should be able to like and unlike posts. Users should be able to view the list of posts they have liked. Users should be able to add comments to posts and view comments on posts.
+-[x] Users should be able to like and unlike posts. Users should be able to view the list of posts they have liked. Users should be able to add comments to posts and view comments on posts.
 
 ### Schedule Post creation using Celery (Optional):
--[ ] Add possibility to schedule Post creation (you can select the time to create the Post before creating of it).
+-[x] Add possibility to schedule Post creation (you can select the time to create the Post before creating of it).
 ### API Permissions:
 -[ ] Only authenticated users should be able to perform actions such as creating posts, liking posts, and following/unfollowing users.
 -[ ] Users should only be able to update and delete their own posts and comments.
@@ -36,7 +36,7 @@ You are tasked with building a RESTful API for a social media platform. The API 
 -[ ] Use appropriate serializers for data validation and representation.
 -[ ] Use appropriate views and viewsets for handling CRUD operations on models.
 -[ ] Use appropriate URL routing for different API endpoints.
--[ ]Use appropriate permissions and authentication classes to implement API permissions.
+-[ ] Use appropriate permissions and authentication classes to implement API permissions.
 
 
 Follow best practices for RESTful API design and documentation. <br>

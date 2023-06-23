@@ -1,6 +1,10 @@
+from datetime import datetime
+
+from django.utils.timezone import make_aware
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -11,6 +15,7 @@ from social_network.serializers import (
     PostSerializer,
     CommentSerializer,
 )
+from tasks.post_creation_task import create_post
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -20,10 +25,36 @@ class PostViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        scheduled_time = self.request.data.get("scheduled_time")
+        if scheduled_time:
+            try:
+                scheduled_datetime = datetime.fromisoformat(scheduled_time)
+                if scheduled_datetime <= datetime.now():
+                    raise ValidationError(
+                        "Scheduled time must be in the future."
+                    )
+            except (TypeError, ValueError):
+                raise ValidationError("Invalid scheduled time format.")
 
-    def perform_update(self, serializer):
-        serializer.save(owner=self.request.user, is_updated=True)
+            scheduled_datetime = make_aware(scheduled_datetime)
+            post_data = serializer.validated_data
+            create_post.apply_async(
+                args=[
+                    self.request.user.id,
+                    post_data["title"],
+                    post_data["text"],
+                ],
+                kwargs={"content_path": self.request.FILES.get("content")},
+                eta=scheduled_datetime,
+            )
+        else:
+            serializer.save(owner=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=["post"])
     def like(self, request, pk=None):

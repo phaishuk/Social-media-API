@@ -1,8 +1,8 @@
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 
 from social_network.models import Post, Comment
 from user.models import User
-from rest_framework.reverse import reverse
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -29,6 +29,7 @@ class PostSerializer(serializers.ModelSerializer):
         view_name="social_network:comment-list",
         lookup_url_kwarg="post_pk",
     )
+    scheduled_time = serializers.DateTimeField(write_only=True, required=False)
 
     class Meta:
         model = Post
@@ -42,9 +43,12 @@ class PostSerializer(serializers.ModelSerializer):
             "liked_by_user",
             "edited",
             "comments",
+            "scheduled_time",
         )
 
-    def get_liked_by_user(self, obj):
+    def get_liked_by_user(self, obj: Post):
+        if not isinstance(obj, Post):
+            return False
         user = self.context.get("request").user
         return obj.likes.filter(id=user.id).exists()
 
