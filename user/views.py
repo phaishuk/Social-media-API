@@ -63,11 +63,10 @@ class LogoutView(AuthenticationPermissionMixin, APIView):
 class UserListView(AuthenticationPermissionMixin, generics.ListAPIView):
     serializer_class = UserListSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
     def get_queryset(self):
-        queryset = User.objects.all()  # TODO maybe prefetch related?
+        queryset = User.objects.prefetch_related(
+            "liked_posts", "following", "followers"
+        )
 
         search_param = self.request.query_params.get("search")
         email_param = self.request.query_params.get("email")

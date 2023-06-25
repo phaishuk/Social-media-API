@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.db.models import Q
+from django.db.models import Q, Count, Prefetch
 from django.utils.timezone import make_aware
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
@@ -10,7 +10,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from social_network.models import Post, Comment
+from social_network.models import Post, Comment, Like
 from social_network.permissions import (
     IsOwnerOrAdminOrReadOnly,
     IsCommentOwnerOrPostOwnerOrAdminOrGetMethod,
@@ -24,7 +24,7 @@ from tasks.post_creation_task import create_post
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
+    # queryset = Post.objects.all()
     serializer_class = PostSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsOwnerOrAdminOrReadOnly,)
