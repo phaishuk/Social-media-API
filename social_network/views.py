@@ -83,7 +83,7 @@ class PostViewSet(viewsets.ModelViewSet):
         return Response({"liked": liked}, status=status.HTTP_200_OK)
 
     def get_queryset(self):
-        queryset = Post.objects.all()
+        queryset = Post.objects.prefetch_related("owner")
 
         search_param = self.request.query_params.get("search")
 

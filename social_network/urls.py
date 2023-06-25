@@ -5,7 +5,6 @@ from social_network.views import PostViewSet, CommentViewSet
 
 router = routers.DefaultRouter()
 router.register("posts", PostViewSet, basename="post")
-router.register("comments", CommentViewSet, basename="comment")
 
 urlpatterns = [
     path("", include(router.urls)),

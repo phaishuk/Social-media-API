@@ -12,7 +12,11 @@ class IsOwnerOrAdminOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        if view.action in ["update", "partial_update", "destroy"]:
+        if view.action in (
+            "update",
+            "partial_update",
+            "destroy",
+        ):
             if obj.owner == request.user:
                 return True
             if view.action == "destroy" and request.user.is_staff:
@@ -28,7 +32,10 @@ class IsCommentOwnerOrPostOwnerOrAdminOrGetMethod(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        if view.action == "update":
+        if view.action in (
+            "update",
+            "partial_update",
+        ):
             return obj.user == request.user
         if view.action == "destroy":
             return (
