@@ -1,4 +1,8 @@
+from collections import OrderedDict
+
 from rest_framework import serializers
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+
 from user.models import User
 
 
@@ -137,3 +141,16 @@ class UserCreateSerializer(BaseUserSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
+
+class CustomAuthTokenSerializer(AuthTokenSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["email"] = self.fields.pop("username")
+        self.fields["email"].label = "Email"
+        self.fields = OrderedDict(
+            [
+                ("email", self.fields["email"]),
+                ("password", self.fields["password"]),
+            ]
+        )

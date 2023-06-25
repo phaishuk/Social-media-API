@@ -16,6 +16,7 @@ from user.serializers import (
     UserListSerializer,
     UserDetailSerializer,
     UserCreateSerializer,
+    CustomAuthTokenSerializer,
 )
 
 
@@ -29,6 +30,7 @@ class CreateUserView(generics.CreateAPIView):
 
 
 class CreateTokenView(ObtainAuthToken):
+    serializer_class = CustomAuthTokenSerializer
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
 
 
