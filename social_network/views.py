@@ -94,6 +94,9 @@ class PostViewSet(viewsets.ModelViewSet):
         detail=True, methods=["post"], permission_classes=(IsAuthenticated,)
     )
     def like(self, request, pk=None):
+        """
+        Sending POST request you can put a like for post
+        """
         post = self.get_object()
         user = request.user
 
@@ -139,6 +142,10 @@ class PostViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
+    """
+    Gives an opportunity to maintain Comment functionality depending on the request.
+    """
+
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsCommentOwnerOrPostOwnerOrAdminOrGetMethod,)
     serializer_class = CommentSerializer

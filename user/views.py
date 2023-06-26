@@ -27,10 +27,18 @@ class AuthenticationPermissionMixin:
 
 
 class CreateUserView(generics.CreateAPIView):
+    """
+    Here you can create user sending POST request
+    """
+
     serializer_class = UserCreateSerializer
 
 
 class CreateTokenView(ObtainAuthToken):
+    """
+    Here you can authenticate user sending POST request
+    """
+
     serializer_class = CustomAuthTokenSerializer
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
 
@@ -38,6 +46,10 @@ class CreateTokenView(ObtainAuthToken):
 class ManageSelfUserView(
     AuthenticationPermissionMixin, generics.RetrieveUpdateDestroyAPIView
 ):
+    """
+    Endpoint related to managing users self account
+    """
+
     serializer_class = UserSelfSerializer
 
     def get_object(self):
@@ -62,6 +74,8 @@ class LogoutView(AuthenticationPermissionMixin, APIView):
 
 
 class UserListView(AuthenticationPermissionMixin, generics.ListAPIView):
+    """Endpoint for listing users"""
+
     serializer_class = UserListSerializer
 
     def get_queryset(self):
@@ -103,6 +117,10 @@ class UserListView(AuthenticationPermissionMixin, generics.ListAPIView):
 
 
 class UserDetailView(AuthenticationPermissionMixin, generics.RetrieveAPIView):
+    """
+    Endpoint for representation info about separate user
+    """
+
     serializer_class = UserDetailSerializer
     queryset = User.objects.all()
     lookup_field = "id"
@@ -135,6 +153,10 @@ class UserDetailView(AuthenticationPermissionMixin, generics.RetrieveAPIView):
 
 
 class UserFollowView(AuthenticationPermissionMixin, generics.ListAPIView):
+    """
+    Engpoint for representation of followers and following users
+    """
+
     serializer_class = FollowLogicSerializer
 
     def get_queryset(self):
