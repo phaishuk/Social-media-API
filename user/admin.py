@@ -13,7 +13,15 @@ class UserAdmin(DjangoUserAdmin):
         (None, {"fields": ("email", "password")}),
         (
             _("Personal info"),
-            {"fields": ("first_name", "last_name", "username", "picture")},
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "username",
+                    "bio",
+                    "picture",
+                )
+            },
         ),
         (
             _("Permissions"),

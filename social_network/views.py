@@ -1,7 +1,9 @@
 from datetime import datetime
 
-from django.db.models import Q, Count, Prefetch
+from django.db.models import Q
 from django.utils.timezone import make_aware
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
@@ -10,7 +12,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from social_network.models import Post, Comment, Like
+from social_network.models import Post, Comment
 from social_network.permissions import (
     IsOwnerOrAdminOrReadOnly,
     IsCommentOwnerOrPostOwnerOrAdminOrGetMethod,
@@ -21,10 +23,14 @@ from social_network.serializers import (
     RestrictedPostSerializer,
 )
 from tasks.post_creation_task import create_post
+from typing import Literal
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    # queryset = Post.objects.all()
+    """
+    Gives an opportunity to maintain Post functionality depending on the request.
+    """
+
     serializer_class = PostSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsOwnerOrAdminOrReadOnly,)
@@ -60,6 +66,24 @@ class PostViewSet(viewsets.ModelViewSet):
         else:
             serializer.save(owner=self.request.user)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="content",
+                description="File to upload as content",
+                required=False,
+                type=OpenApiTypes.BINARY,
+                location="path",
+                allow_blank=True,
+            ),
+            OpenApiParameter(
+                name="scheduled_time",
+                description="Here you can enter data for scheduling your posts",
+                required=False,
+                type=str,
+            ),
+        ]
+    )
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -93,6 +117,25 @@ class PostViewSet(viewsets.ModelViewSet):
                 | Q(text__icontains=search_param)
             )
         return queryset
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                description=(
+                    "Search parameter. Gives an opportunity "
+                    "to search by post's title or text. "
+                    "Letter case doesn't matter. This will return all "
+                    "entities of given param in titles and texts. "
+                    "(ex. ?search=OREO)"
+                ),
+                required=False,
+                type=str,
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(self, request, *args, **kwargs)
 
 
 class CommentViewSet(viewsets.ModelViewSet):

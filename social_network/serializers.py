@@ -29,7 +29,13 @@ class PostSerializer(serializers.ModelSerializer):
         view_name="social_network:comment-list",
         lookup_url_kwarg="post_pk",
     )
-    scheduled_time = serializers.DateTimeField(write_only=True, required=False)
+    scheduled_time = serializers.DateTimeField(
+        write_only=True,
+        required=False,
+    )
+    content = serializers.FileField(
+        allow_empty_file=True, allow_null=True, required=False
+    )
 
     class Meta:
         model = Post

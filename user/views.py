@@ -1,4 +1,5 @@
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import generics, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -80,6 +81,25 @@ class UserListView(AuthenticationPermissionMixin, generics.ListAPIView):
         if email_param:
             queryset = queryset.filter(username__icontains=email_param)
         return queryset
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                description=(
+                    "Search parameter. Gives an opportunity "
+                    "to search by first name, last name, username. "
+                    "Letter case doesn't matter. This will return all "
+                    "entities of given param in first names, last names, "
+                    "and usernames (ex. ?search=petrovich)"
+                ),
+                required=False,
+                type=str,
+            )
+        ]
+    )
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class UserDetailView(AuthenticationPermissionMixin, generics.RetrieveAPIView):
