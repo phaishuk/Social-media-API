@@ -36,3 +36,4 @@ wcwidth==0.2.6
 celery==5.3.1
 django-celery-beat==2.5.0
 redis==4.5.5
+python-dotenv==1.0.0
