@@ -24,6 +24,7 @@ It provides various endpoints to perform actions such as creating posts, comment
 # Getting Started
 
 To get started with the Social Media API, follow these steps:
+(using PyCharm you can click on the green arrow without copying command)
 
 1. Clone the repository:
 
@@ -31,7 +32,7 @@ To get started with the Social Media API, follow these steps:
     git clone https://github.com/phaishuk/Social-media-API
     ```
 
-2. Navigate to the project directory:
+2. Navigate to the project directory (don't forget to check the directory where you clone the project):
 
     ```shell
     cd Social-media-API
@@ -64,13 +65,18 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
+7. Run server:
+```shell
+python manage.py runserver
+```
+
 ### Defer post creation
 
 Using this functionality that's required to have installed **redis server** on your local computer.
 Server have to be up on default redis port `redis://localhost:6379` \
 Check it out how to configure it here: [Official link on configuration](https://redis.io/docs/getting-started/)
-- Open terminal check it works by command `redis-cli ping`. If answer is `PONG` everything works.
-- Go to directory where project cloned `cd Social-media-API`
+- Open separate from django server terminal check it works by command `redis-cli ping`. If answer is `PONG` everything works.
+- Go to directory where project is cloned `cd Social-media-API`
 - Start celery worker in terminal by command `celery -A app worker --loglevel=info`
 
 After that actions defer post creation have to work properly.
