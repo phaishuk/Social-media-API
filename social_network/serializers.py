@@ -3,6 +3,7 @@ from rest_framework.reverse import reverse
 
 from social_network.models import Post, Comment
 from user.models import User
+from drf_spectacular.utils import extend_schema_field
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -12,7 +13,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ("id", "username", "url")
 
+    @extend_schema_field(serializers.URLField)
     def get_url(self, obj):
+        """
+        Returns user's url
+        """
         request = self.context.get("request")
         if request is not None:
             return reverse(
@@ -52,6 +57,7 @@ class PostSerializer(serializers.ModelSerializer):
             "scheduled_time",
         )
 
+    @extend_schema_field(serializers.BooleanField)
     def get_liked_by_current_user(self, obj: Post):
         if not isinstance(obj, Post):
             return False

@@ -68,6 +68,8 @@ class ManageSelfUserView(
 
 
 class LogoutView(AuthenticationPermissionMixin, APIView):
+    """Endpoint for logout. Here user can invalidate self token."""
+
     def post(self, request):
         request.user.auth_token.delete()
         return Response({"detail": "Logged out successfully"})
