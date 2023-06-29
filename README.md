@@ -89,6 +89,9 @@ user2@user.com
 PASSWORD: (the same for all)
 1234qwer!@#$
 ```
+Using this credential you can easily obtain token on the endpoint `/api/user/login/`. \
+Using app add header with key `Authorization` and value `Token <obtained token value>`
+
 
 ### Defer post creation
 
