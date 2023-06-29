@@ -2,6 +2,7 @@ import zoneinfo
 from collections import OrderedDict
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory
@@ -19,7 +20,9 @@ from user.models import User
 
 class UserSerializerTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create(username="testuser")
+        self.user = get_user_model().objects.create(
+            username="testuser", email="test@example.com", password="userpass"
+        )
         self.factory = APIRequestFactory()
         request = self.factory.get("/dummy_url/")
         self.context = {"request": Request(request)}
@@ -36,8 +39,8 @@ class UserSerializerTest(TestCase):
 
 class PostSerializerTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create(
-            username="testuser", email="test@example.com"
+        self.user = get_user_model().objects.create(
+            username="testuser", email="test@example.com", password="userpass"
         )
         self.post_title = "Test Post"
         self.post_text = "This is a test post"
