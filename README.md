@@ -73,7 +73,7 @@ Please rename it `.env.sample -> .env` before running server.
 python manage.py runserver
 ```
 
-8. Authentificate to check functionality:
+8. Authenticate to check functionality:
 
 This project has preinstalled data, and you can check it out using next credentials:
 
