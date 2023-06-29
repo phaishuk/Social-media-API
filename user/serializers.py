@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.authtoken.serializers import AuthTokenSerializer
@@ -148,13 +146,4 @@ class UserCreateSerializer(BaseUserSerializer):
 
 
 class CustomAuthTokenSerializer(AuthTokenSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["email"] = self.fields.pop("username")
-        self.fields["email"].label = "Email"
-        self.fields = OrderedDict(
-            [
-                ("email", self.fields["email"]),
-                ("password", self.fields["password"]),
-            ]
-        )
+    username = serializers.EmailField(label="Email")
