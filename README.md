@@ -66,8 +66,28 @@ python manage.py migrate
 ```
 
 7. Run server:
+
+In this project sensitive data moved to `.env.sample` file. \
+Please rename it `.env.sample -> .env` before running server.
 ```shell
 python manage.py runserver
+```
+
+8. Authentificate to check functionality:
+
+This project has preinstalled data, and you can check it out using next credentials:
+
+```
+
+USERNAMEs:
+
+admin@admin.com (superuser)
+user@user.com
+user1@user.com
+user2@user.com
+
+PASSWORD: (the same for all)
+1234qwer!@#$
 ```
 
 ### Defer post creation
