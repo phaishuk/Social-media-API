@@ -15,7 +15,6 @@ from social_network.serializers import (
     CommentSerializer,
     CommentListSerializer,
 )
-from user.models import User
 
 
 class UserSerializerTest(TestCase):
