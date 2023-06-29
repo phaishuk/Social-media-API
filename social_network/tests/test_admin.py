@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth import get_user_model
+from django.contrib import admin
 from django.urls import reverse
 
 from social_network.admin import PostAdmin, LikeAdmin, CommentAdmin
@@ -33,6 +34,11 @@ class AdminPanelTest(TestCase):
             email="test_admin@admin.com",
             password="testadminpassword",
         )
+
+    def test_social_network_models_in_admin_registered(self):
+        self.assertIn(Post, admin.site._registry)
+        self.assertIn(Comment, admin.site._registry)
+        self.assertIn(Like, admin.site._registry)
 
     def test_post_admin(self):
         post_admin = PostAdmin(model=Post, admin_site=self.site)
