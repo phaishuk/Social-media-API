@@ -2,7 +2,6 @@ from datetime import datetime
 
 from django.db.models import Q
 from django.utils.timezone import make_aware
-from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
@@ -23,7 +22,6 @@ from social_network.serializers import (
     RestrictedPostSerializer,
 )
 from tasks.post_creation_task import create_post
-from typing import Literal
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -66,24 +64,6 @@ class PostViewSet(viewsets.ModelViewSet):
         else:
             serializer.save(owner=self.request.user)
 
-    @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="content",
-                description="File to upload as content",
-                required=False,
-                type=OpenApiTypes.BINARY,
-                location="path",
-                allow_blank=True,
-            ),
-            OpenApiParameter(
-                name="scheduled_time",
-                description="Here you can enter data for scheduling your posts",
-                required=False,
-                type=str,
-            ),
-        ]
-    )
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
