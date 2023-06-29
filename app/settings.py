@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = os.environ.get("DEBUG", "") != "True"
+DEBUG = os.environ.get("DEBUG", "") != "False"
 
 if DEBUG:
     import mimetypes
@@ -38,11 +38,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework.authtoken",
     "rest_framework",
+    "user",
+    "social_network",
     "drf_spectacular",
     "debug_toolbar",
     "django_celery_beat",
-    "user",
-    "social_network",
 ]
 
 MIDDLEWARE = [
