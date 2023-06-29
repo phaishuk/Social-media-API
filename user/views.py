@@ -36,7 +36,8 @@ class CreateUserView(generics.CreateAPIView):
 
 class CreateTokenView(ObtainAuthToken):
     """
-    Here you can authenticate user sending POST request
+    On this endpoint users obtain token.
+    Here you can authenticate user sending POST request.
     """
 
     serializer_class = CustomAuthTokenSerializer
@@ -156,7 +157,7 @@ class UserDetailView(AuthenticationPermissionMixin, generics.RetrieveAPIView):
 
 class UserFollowView(AuthenticationPermissionMixin, generics.ListAPIView):
     """
-    Engpoint for representation of followers and following users
+    Endpoint for representation of followers and following users
     """
 
     serializer_class = FollowLogicSerializer

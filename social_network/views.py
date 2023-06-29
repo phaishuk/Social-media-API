@@ -27,6 +27,7 @@ from tasks.post_creation_task import create_post
 class PostViewSet(viewsets.ModelViewSet):
     """
     Gives an opportunity to maintain Post functionality depending on the request.
+    Using content fild you able to attach some file.
     """
 
     serializer_class = PostSerializer
