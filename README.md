@@ -90,7 +90,8 @@ PASSWORD: (the same for all)
 1234qwer!@#$
 ```
 Using this credential you can easily obtain token on the endpoint `/api/user/login/`. \
-Using app add header with key `Authorization` and value `Token <obtained token value>`
+Using app add header with key `Authorization` and value `Token <obtained token value>`.
+If you would like to register new user you need to provide email, username, and password.
 
 
 ### Defer post creation
