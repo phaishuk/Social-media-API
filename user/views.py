@@ -95,7 +95,7 @@ class UserListView(AuthenticationPermissionMixin, generics.ListAPIView):
                 | Q(last_name__icontains=search_param)
             )
         if email_param:
-            queryset = queryset.filter(username__icontains=email_param)
+            queryset = queryset.filter(email__icontains=email_param)
         return queryset
 
     @extend_schema(
