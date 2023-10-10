@@ -54,6 +54,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "user.middleware.UpdateLastRequestMiddleware",
 ]
 
 
@@ -111,6 +112,7 @@ AUTH_USER_MODEL = "user.User"
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=9999),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=9999),
+    "UPDATE_LAST_LOGIN": True,
 }
 
 # Internationalization

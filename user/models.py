@@ -52,6 +52,7 @@ class User(AbstractUser):
     following = models.ManyToManyField(
         "self", symmetrical=False, related_name="followers"
     )
+    last_request = models.DateTimeField(null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
