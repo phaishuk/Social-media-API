@@ -1,12 +1,12 @@
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import generics, status
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from social_network.models import Post
 from social_network.serializers import PostSerializer
@@ -22,7 +22,7 @@ from user.serializers import (
 
 
 class AuthenticationPermissionMixin:
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
 
 
@@ -181,9 +181,7 @@ class UserPostListView(AuthenticationPermissionMixin, generics.ListAPIView):
         return Post.objects.filter(owner_id=user_id)
 
 
-class UserLikedPostsListView(
-    AuthenticationPermissionMixin, generics.ListAPIView
-):
+class UserLikedPostsListView(AuthenticationPermissionMixin, generics.ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):

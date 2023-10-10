@@ -4,12 +4,12 @@ from django.db.models import Q
 from django.utils.timezone import make_aware
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from social_network.models import Post, Comment
 from social_network.permissions import (
@@ -31,7 +31,7 @@ class PostViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = PostSerializer
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsOwnerOrAdminOrReadOnly,)
 
     def get_serializer_class(self):
@@ -122,7 +122,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     Gives an opportunity to maintain Comment functionality depending on the request.
     """
 
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsCommentOwnerOrPostOwnerOrAdminOrGetMethod,)
     serializer_class = CommentSerializer
 
