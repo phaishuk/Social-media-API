@@ -45,9 +45,7 @@ class PostViewSet(viewsets.ModelViewSet):
             try:
                 scheduled_datetime = datetime.fromisoformat(scheduled_time)
                 if scheduled_datetime <= datetime.now():
-                    raise ValidationError(
-                        "Scheduled time must be in the future."
-                    )
+                    raise ValidationError("Scheduled time must be in the future.")
             except (TypeError, ValueError):
                 raise ValidationError("Invalid scheduled time format.")
 
@@ -71,9 +69,7 @@ class PostViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         return Response(status=status.HTTP_201_CREATED)
 
-    @action(
-        detail=True, methods=["post"], permission_classes=(IsAuthenticated,)
-    )
+    @action(detail=True, methods=["post"], permission_classes=(IsAuthenticated,))
     def like(self, request, pk=None):
         """
         Sending POST request you can put a like for post
@@ -97,8 +93,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
         if search_param:
             queryset = queryset.filter(
-                Q(title__icontains=search_param)
-                | Q(text__icontains=search_param)
+                Q(title__icontains=search_param) | Q(text__icontains=search_param)
             )
         return queryset
 
