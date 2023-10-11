@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from django.db.models import Q
+from django.db.models import Q, Count
+from django.utils import timezone
 from django.utils.timezone import make_aware
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
@@ -11,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from social_network.models import Post, Comment
+from social_network.models import Post, Comment, Like
 from social_network.permissions import (
     IsOwnerOrAdminOrReadOnly,
     IsCommentOwnerOrPostOwnerOrAdminOrGetMethod,
@@ -85,6 +86,32 @@ class PostViewSet(viewsets.ModelViewSet):
             liked = True
 
         return Response({"liked": liked}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["get"])
+    def like_analytics(self, request):
+        date_from = request.query_params.get("date_from")
+        date_to = request.query_params.get("date_to")
+        date = request.query_params.get("date")
+
+        queryset = Like.objects.filter(post__in=self.get_queryset())
+
+        if date_from and date_to:
+            start_datetime = timezone.make_aware(datetime.fromisoformat(date_from))
+            end_datetime = timezone.make_aware(datetime.fromisoformat(date_to))
+            queryset = queryset.filter(created_at__range=[start_datetime, end_datetime])
+        elif date_from and not date_to:
+            start_datetime = timezone.make_aware(datetime.fromisoformat(date_from))
+            queryset = queryset.filter(created_at__date__gte=start_datetime)
+        elif date_to and not date_from:
+            end_datetime = timezone.make_aware(datetime.fromisoformat(date_to))
+            queryset = queryset.filter(created_at__date__lte=end_datetime)
+        elif date:
+            selected_date = timezone.make_aware(datetime.fromisoformat(date))
+            queryset = queryset.filter(created_at__date=selected_date)
+
+        like_count = queryset.aggregate(total_likes=Count("id"))["total_likes"]
+
+        return Response({"total_likes": like_count})
 
     def get_queryset(self):
         queryset = Post.objects.prefetch_related("owner")

@@ -14,6 +14,11 @@ urlpatterns = [
         name="post-like",
     ),
     path(
+        "like_analytics/",
+        PostViewSet.as_view({"get": "like_analytics"}),
+        name="like-analytics",
+    ),
+    path(
         "posts/<int:post_pk>/comments/",
         CommentViewSet.as_view({"get": "list", "post": "create"}),
         name="comment-list",
